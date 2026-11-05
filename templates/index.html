@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Almoxarifado TI</title>
+    <title>Almoxarifado TI - Atende Projel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <header class="header">
-            <h1>📦 Almoxarifado de TI</h1>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Atende Projel" class="sistema-logo">
+            </div>
             <p>Gestão e Controle de Estoque em Tempo Real</p>
         </header>
 
