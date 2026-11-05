@@ -4,9 +4,12 @@ from supabase import create_client, Client
 
 app = Flask(__name__)
 
-# Configurações do Supabase obtidas das variáveis de ambiente
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+# Configurações do Supabase obtidas das variáveis de ambiente com fallback seguro
+SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("SUPABASE_PROJECT_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise ValueError("As variáveis de ambiente SUPABASE_URL e SUPABASE_KEY não estão configuradas corretamente no Render.")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -19,7 +22,6 @@ def listar_produtos():
     response = supabase.table('produtos').select('*').order('nome').execute()
     produtos = response.data
     
-    # Adiciona flag dinâmica de alerta
     for p in produtos:
         p['status_alerta'] = p['quantidade'] <= p['alerta_minimo']
         
@@ -50,7 +52,6 @@ def registrar_movimentacao():
     qtd_mov = int(dados.get('quantidade', 0))
     centro_custo = dados.get('centro_custo', 'N/A')
 
-    # Busca produto atual
     prod_resp = supabase.table('produtos').select('*').eq('id', produto_id).execute()
     if not prod_resp.data:
         return jsonify({"erro": "Produto não encontrado!"}), 404
@@ -63,10 +64,8 @@ def registrar_movimentacao():
 
     nova_qtd = (qtd_atual + qtd_mov) if tipo == 'ENTRADA' else (qtd_atual - qtd_mov)
 
-    # Atualiza quantidade no banco
     supabase.table('produtos').update({'quantidade': nova_qtd}).eq('id', produto_id).execute()
 
-    # Registra no histórico
     supabase.table('movimentacoes').insert({
         'produto_id': produto_id,
         'tipo': tipo,
@@ -74,7 +73,6 @@ def registrar_movimentacao():
         'centro_custo': centro_custo
     }).execute()
 
-    # Mensagem customizada de alerta se o estoque estiver em nível crítico (<= 1)
     alerta = None
     if nova_qtd <= produto['alerta_minimo']:
         alerta = f"ALERTA CRÍTICO: O item '{produto['nome']}' está com apenas {nova_qtd} unidade(s) restante(s)!"
