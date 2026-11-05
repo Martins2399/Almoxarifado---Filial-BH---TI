@@ -629,3 +629,68 @@ tbody tr:hover td {
     width: auto;
     padding: 0.8rem 1.4rem;
 }
+
+/* Estilo moderno para as categorias em formato de etiqueta */
+.category-pill {
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    display: inline-block;
+}
+
+/* Destaque visual limpo para a quantidade em estoque */
+.stock-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    letter-spacing: 0.3px;
+}
+
+/* Espaçamento e linhas refinadas na tabela */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px; /* Cria um leve espaçamento elegante entre as linhas */
+    text-align: left;
+}
+
+th {
+    padding: 1rem 1.25rem;
+    color: var(--text-muted);
+    background-color: rgba(15, 23, 42, 0.8);
+    text-transform: uppercase;
+    font-size: 0.73rem;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+td {
+    padding: 1rem 1.25rem;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+td:first-child {
+    border-left: 1px solid var(--border-color);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+td:last-child {
+    border-right: 1px solid var(--border-color);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+tbody tr {
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+tbody tr:hover td {
+    background-color: #16223b;
+    border-color: rgba(14, 165, 233, 0.3);
+}

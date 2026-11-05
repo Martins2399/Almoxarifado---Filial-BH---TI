@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('form-produto').addEventListener('submit', cadastrarOuAtualizarProduto);
     document.getElementById('form-movimentacao').addEventListener('submit', processarMovimentacao);
+    
+    // Se você tiver um input de pesquisa com o ID 'filtro-pesquisa', descomente a linha abaixo:
+    // document.getElementById('filtro-pesquisa').addEventListener('input', filtrarProdutos);
 });
 
 async function carregarProdutos() {
@@ -24,7 +27,7 @@ function renderizarTabela(produtos) {
     let alertasAtivos = [];
 
     if (produtos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Nenhum item cadastrado no almoxarifado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum item cadastrado no almoxarifado.</td></tr>`;
         exibirAlertaBanner([]);
         return;
     }
@@ -38,10 +41,10 @@ function renderizarTabela(produtos) {
         }
 
         tr.innerHTML = `
-            <td>#${p.id}</td>
+            <td style="color: var(--text-muted); font-weight: 500;">#${p.id}</td>
             <td><strong>${p.nome}</strong></td>
-            <td><span style="color: var(--text-muted);">${p.categoria}</span></td>
-            <td><strong style="font-size: 1rem;">${p.quantidade}</strong></td>
+            <td><span class="category-pill">${p.categoria}</span></td>
+            <td><span class="stock-number">${p.quantidade}</span></td>
             <td>
                 <span class="badge ${isCritico ? 'badge-critical' : 'badge-normal'}">
                     ${isCritico ? '⚠️ Crítico (' + p.quantidade + ')' : 'Normal'}
