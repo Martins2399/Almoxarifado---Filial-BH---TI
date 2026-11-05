@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almoxarifado TI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>📦 Almoxarifado de TI</h1>
+            <p>Gestão e Controle de Estoque em Tempo Real</p>
+        </header>
+
+        <!-- Banner de Alerta Dinâmico -->
+        <div id="alert-banner" class="alert-banner hidden"></div>
+
+        <main class="grid-layout">
+            <!-- Formulário de Cadastro -->
+            <section class="card">
+                <h2>Cadastrar Novo Item</h2>
+                <form id="form-produto">
+                    <div class="form-group">
+                        <label for="nome">Nome do Equipamento/Item</label>
+                        <input type="text" id="nome" required placeholder="Ex: Monitor Dell 24'">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <input type="text" id="categoria" required placeholder="Ex: Periféricos, Redes">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade Inicial</label>
+                        <input type="number" id="quantidade" min="0" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar ao Estoque</button>
+                </form>
+            </section>
+
+            <!-- Tabela de Itens em Estoque -->
+            <section class="card full-width">
+                <h2>Itens em Estoque</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Item</th>
+                                <th>Categoria</th>
+                                <th>Estoque</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-produtos">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de Movimentação (Retirar/Entrar) -->
+    <div id="modal-movimentacao" class="modal hidden">
+        <div class="modal-content card">
+            <h3 id="modal-titulo">Movimentar Item</h3>
+            <form id="form-movimentacao">
+                <input type="hidden" id="modal-produto-id">
+                <div class="form-group">
+                    <label for="modal-tipo">Tipo de Operação</label>
+                    <select id="modal-tipo">
+                        <option value="SAIDA">Retirar (Saída)</option>
+                        <option value="ENTRADA">Devolver/Adicionar (Entrada)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modal-qtd">Quantidade</label>
+                    <input type="number" id="modal-qtd" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-centro-custo">Centro de Custo / Destino</label>
+                    <input type="text" id="modal-centro-custo" placeholder="Ex: Setor Financeiro / Chamado #1042">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
