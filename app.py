@@ -35,31 +35,41 @@ def adicionar_produto():
         return jsonify({"erro": "Banco de dados não configurado"}), 500
     
     dados = request.json or {}
-    nome = str(dados.get('nome', '')).strip()
+    nome_original = str(dados.get('nome', '')).strip()
     categoria = str(dados.get('categoria', '')).strip()
     quantidade_adicionada = int(dados.get('quantidade', 0))
     alerta_minimo = int(dados.get('alerta_minimo', 1))
 
-    if not nome or not categoria:
+    if not nome_original or not categoria:
         return jsonify({"erro": "Nome e categoria são obrigatórios!"}), 400
 
-    try:
-        # Verifica se o produto já existe para somar em vez de duplicar
-        existente = supabase.table('produtos').select('*').eq('nome', nome).execute()
+    # Chave normalizada para evitar duplicidade independente de maiúsculas/minúsculas ou espaços extras
+    nome_chave = ' '.join(nome_original.lower().split())
 
-        if existente.data and len(existente.data) > 0:
-            prod_atual = existente.data[0]
-            nova_quantidade = prod_atual['quantidade'] + quantidade_adicionada
+    try:
+        # Busca todos os produtos para comparar a chave normalizada
+        response_all = supabase.table('produtos').select('*').execute()
+        produtos_cadastrados = response_all.data or []
+
+        produto_existente = None
+        for p in produtos_cadastrados:
+            p_chave = ' '.join(str(p['nome']).lower().split())
+            if p_chave == nome_chave:
+                produto_existente = p
+                break
+
+        if produto_existente:
+            nova_quantidade = produto_existente['quantidade'] + quantidade_adicionada
             
             response = supabase.table('produtos').update({
                 'quantidade': nova_quantidade,
                 'categoria': categoria
-            }).eq('id', prod_atual['id']).execute()
+            }).eq('id', produto_existente['id']).execute()
 
-            return jsonify({"mensagem": f"Item '{nome}' já existe! Quantidade atualizada para {nova_quantidade}."}), 200
+            return jsonify({"mensagem": f"Item já existente encontrado! Quantidade atualizada para {nova_quantidade}."}), 200
         else:
             response = supabase.table('produtos').insert({
-                'nome': nome,
+                'nome': nome_original,
                 'categoria': categoria,
                 'quantidade': quantidade_adicionada,
                 'alerta_minimo': alerta_minimo
