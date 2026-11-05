@@ -372,3 +372,62 @@ tbody tr:hover td {
     background-color: rgba(244, 63, 94, 0.2);
     border-color: var(--danger-red);
 }
+
+/* Container agrupado para alinhar os botões de ação compactos na mesma linha */
+td[style*="text-align: center"] {
+    white-space: nowrap;
+}
+
+/* Padronização moderna e compacta para todos os botões da tabela */
+.btn-action, .btn-edit, .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 2px;
+    vertical-align: middle;
+    width: auto;
+}
+
+/* Botão Movimentar */
+.btn-action {
+    background-color: rgba(14, 165, 233, 0.1);
+    color: var(--accent-hover);
+    border-color: rgba(14, 165, 233, 0.25);
+}
+
+.btn-action:hover {
+    background-color: var(--accent-blue);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+/* Botão Editar (Lápis) */
+.btn-edit {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #38bdf8;
+    border-color: var(--border-color);
+}
+
+.btn-edit:hover {
+    background-color: rgba(56, 189, 248, 0.15);
+    border-color: var(--accent-blue);
+}
+
+/* Botão Excluir (Lixeira) */
+.btn-delete {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #f43f5e;
+    border-color: var(--border-color);
+}
+
+.btn-delete:hover {
+    background-color: rgba(244, 63, 94, 0.15);
+    border-color: var(--danger-red);
+}
