@@ -24,6 +24,10 @@
             color: #ffffff !important;
             border: 1px solid #4a5568 !important;
         }
+        .form-control::placeholder {
+            color: #a0aec0 !important;
+            opacity: 1;
+        }
         .form-control:focus {
             border-color: #0dcaf0 !important;
             box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
@@ -32,7 +36,7 @@
             max-height: 480px;
             overflow-y: auto;
         }
-        /* Customização da barra de rolagem para garantir funcionamento */
+        /* Customização da barra de rolagem */
         .table-responsive-custom::-webkit-scrollbar {
             width: 8px;
         }
@@ -95,8 +99,8 @@
                 <div class="card-custom p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                         <h3 class="text-light m-0">Itens em Estoque</h3>
-                        <div class="input-group w-auto" style="max-width: 280px;">
-                            <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-search"></i></span>
+                        <div class="input-group" style="width: 300px;">
+                            <span class="input-group-text bg-dark border-secondary text-info"><i class="fa-solid fa-search"></i></span>
                             <input type="text" id="filtroPesquisa" class="form-control" placeholder="Pesquisar equipamento...">
                         </div>
                     </div>
@@ -259,9 +263,9 @@
                         <td class="fw-bold text-info">${p.quantidade}</td>
                         <td><span class="badge ${p.status_alerta ? 'bg-danger' : 'bg-success'}">${p.status_alerta ? 'Crítico' : 'Normal'}</span></td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-outline-info me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Movimentar"><i class="fa-solid fa-right-left"></i></button>
-                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-info me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Movimentar Estoque (Entrada/Saída)"><i class="fa-solid fa-right-left"></i></button>
+                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade})" title="Editar Item"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="excluirProduto(${p.id})" title="Excluir Item"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     `;
                     tbody.appendChild(tr);
