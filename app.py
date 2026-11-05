@@ -4,12 +4,8 @@ from supabase import create_client, Client
 
 app = Flask(__name__)
 
-# Configurações do Supabase obtidas das variáveis de ambiente
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-
-if not SUPABASE_URL or not SUPABASE_KEY:
-    print("AVISO: Variáveis do Supabase não encontradas!")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
@@ -33,25 +29,43 @@ def listar_produtos():
 def adicionar_produto():
     if not supabase:
         return jsonify({"erro": "Banco de dados não configurado"}), 500
+    
     dados = request.json
-    nome = dados.get('nome')
-    categoria = dados.get('categoria')
-    quantidade = int(dados.get('quantidade', 0))
+    nome = dados.get('nome').strip()
+    categoria = dados.get('categoria').strip()
+    quantidade_adicionada = int(dados.get('quantidade', 0))
     alerta_minimo = int(dados.get('alerta_minimo', 1))
 
-    response = supabase.table('produtos').insert({
-        'nome': nome,
-        'categoria': categoria,
-        'quantidade': quantidade,
-        'alerta_minimo': alerta_minimo
-    }).execute()
+    # Verifica se o produto já existe no banco
+    existente = supabase.table('produtos').select('*').eq('nome', nome).execute()
 
-    return jsonify({"mensagem": "Item cadastrado com sucesso!", "dados": response.data}), 201
+    if existente.data:
+        # Se já existe, soma a quantidade nova à quantidade atual
+        prod_atual = existente.data[0]
+        nova_quantidade = prod_atual['quantidade'] + quantidade_adicionada
+        
+        response = supabase.table('produtos').update({
+            'quantidade': nova_quantidade,
+            'categoria': categoria # Atualiza categoria caso tenha mudado
+        }).eq('id', prod_atual['id']).execute()
+
+        return jsonify({"mensagem": f"O item '{nome}' já existe. Quantidade atualizada com sucesso!", "dados": response.data}), 200
+    else:
+        # Se não existe, cria um novo
+        response = supabase.table('produtos').insert({
+            'nome': nome,
+            'categoria': categoria,
+            'quantidade': quantidade_adicionada,
+            'alerta_minimo': alerta_minimo
+        }).execute()
+
+        return jsonify({"mensagem": "Item cadastrado com sucesso!", "dados": response.data}), 201
 
 @app.route('/api/movimentacao', methods=['POST'])
 def registrar_movimentacao():
     if not supabase:
         return jsonify({"erro": "Banco de dados não configurado"}), 500
+    
     dados = request.json
     produto_id = dados.get('produto_id')
     tipo = dados.get('tipo')

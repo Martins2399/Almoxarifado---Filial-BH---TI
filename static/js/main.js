@@ -1,63 +1,81 @@
+let listaGlobalProdutos = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     carregarProdutos();
 
-    document.getElementById('form-produto').addEventListener('submit', cadastrarProduto);
+    document.getElementById('form-produto').addEventListener('submit', cadastrarOuAtualizarProduto);
     document.getElementById('form-movimentacao').addEventListener('submit', processarMovimentacao);
 });
 
 async function carregarProdutos() {
     try {
         const res = await fetch('/api/produtos');
-        const produtos = await res.json();
-        
-        const tbody = document.getElementById('tabela-produtos');
-        tbody.innerHTML = '';
-
-        let alertasAtivos = [];
-
-        produtos.forEach(p => {
-            const tr = document.createElement('tr');
-            
-            // Verificação Dinâmica de Estoque Crítico
-            const isCritico = p.status_alerta;
-            if (isCritico) {
-                alertasAtivos.push(p.nome);
-            }
-
-            tr.innerHTML = `
-                <td>#${p.id}</td>
-                <td><strong>${p.nome}</strong></td>
-                <td>${p.categoria}</td>
-                <td><strong>${p.quantidade}</strong></td>
-                <td>
-                    <span class="badge ${isCritico ? 'badge-critical' : 'badge-normal'}">
-                        ${isCritico ? '⚠️ Resta ' + p.quantidade + ' un' : 'OK'}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-action" onclick="abrirModal(${p.id}, '${p.nome}')">Movimentar</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        exibirAlertaBanner(alertasAtivos);
+        listaGlobalProdutos = await res.json();
+        renderizarTabela(listaGlobalProdutos);
     } catch (err) {
         console.error('Erro ao carregar itens:', err);
     }
+}
+
+function renderizarTabela(produtos) {
+    const tbody = document.getElementById('tabela-produtos');
+    tbody.innerHTML = '';
+
+    let alertasAtivos = [];
+
+    if (produtos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Nenhum item cadastrado no almoxarifado.</td></tr>`;
+        exibirAlertaBanner([]);
+        return;
+    }
+
+    produtos.forEach(p => {
+        const tr = document.createElement('tr');
+        const isCritico = p.status_alerta;
+        
+        if (isCritico) {
+            alertasAtivos.push(`${p.nome} (${p.quantidade} un)`);
+        }
+
+        tr.innerHTML = `
+            <td>#${p.id}</td>
+            <td><strong>${p.nome}</strong></td>
+            <td><span style="color: var(--text-muted);">${p.categoria}</span></td>
+            <td><strong style="font-size: 1rem;">${p.quantidade}</strong></td>
+            <td>
+                <span class="badge ${isCritico ? 'badge-critical' : 'badge-normal'}">
+                    ${isCritico ? '⚠️ Crítico (' + p.quantidade + ')' : 'Normal'}
+                </span>
+            </td>
+            <td style="text-align: center;">
+                <button class="btn btn-action" onclick="abrirModal(${p.id}, '${p.nome}')">Movimentar</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    exibirAlertaBanner(alertasAtivos);
+}
+
+function filtrarProdutos() {
+    const termo = document.getElementById('filtro-pesquisa').value.toLowerCase();
+    const filtrados = listaGlobalProdutos.filter(p => 
+        p.nome.toLowerCase().includes(termo) || p.categoria.toLowerCase().includes(termo)
+    );
+    renderizarTabela(filtrados);
 }
 
 function exibirAlertaBanner(itensCriticos) {
     const banner = document.getElementById('alert-banner');
     if (itensCriticos.length > 0) {
         banner.classList.remove('hidden');
-        banner.innerHTML = `🚨 <strong>ATENÇÃO:</strong> Os seguintes itens estão em nível crítico de estoque (<= 1 un): ${itensCriticos.join(', ')}`;
+        banner.innerHTML = `🚨 <strong>ATENÇÃO AO ESTOQUE CRÍTICO (<= 1 un):</strong> ${itensCriticos.join(' | ')}`;
     } else {
         banner.classList.add('hidden');
     }
 }
 
-async function cadastrarProduto(e) {
+async function cadastrarOuAtualizarProduto(e) {
     e.preventDefault();
     const nome = document.getElementById('nome').value;
     const categoria = document.getElementById('categoria').value;
@@ -69,9 +87,14 @@ async function cadastrarProduto(e) {
         body: JSON.stringify({ nome, categoria, quantidade })
     });
 
+    const resultado = await response.json();
+
     if (response.ok) {
         document.getElementById('form-produto').reset();
         carregarProdutos();
+        alert(resultado.mensagem);
+    } else {
+        alert(resultado.erro || 'Erro ao processar item');
     }
 }
 

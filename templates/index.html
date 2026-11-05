@@ -20,9 +20,10 @@
         <div id="alert-banner" class="alert-banner hidden"></div>
 
         <main class="grid-layout">
-            <!-- Formulário de Cadastro -->
+            <!-- Formulário de Cadastro / Entrada -->
             <section class="card">
-                <h2>Cadastrar Novo Item</h2>
+                <h2>Cadastrar / Repor Item</h2>
+                <p class="card-subtitle">Se o item já existir, a quantidade será somada automaticamente.</p>
                 <form id="form-produto">
                     <div class="form-group">
                         <label for="nome">Nome do Equipamento/Item</label>
@@ -33,16 +34,21 @@
                         <input type="text" id="categoria" required placeholder="Ex: Periféricos, Redes">
                     </div>
                     <div class="form-group">
-                        <label for="quantidade">Quantidade Inicial</label>
-                        <input type="number" id="quantidade" min="0" value="1" required>
+                        <label for="quantidade">Quantidade a Adicionar</label>
+                        <input type="number" id="quantidade" min="1" value="1" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Adicionar ao Estoque</button>
+                    <button type="submit" class="btn btn-primary">Salvar no Estoque</button>
                 </form>
             </section>
 
-            <!-- Tabela de Itens em Estoque -->
+            <!-- Tabela Organizada de Itens em Estoque -->
             <section class="card full-width">
-                <h2>Itens em Estoque</h2>
+                <div class="table-header-flex">
+                    <h2>Itens em Estoque</h2>
+                    <div class="search-box">
+                        <input type="text" id="filtro-pesquisa" placeholder="🔍 Pesquisar equipamento ou categoria..." onkeyup="filtrarProdutos()">
+                    </div>
+                </div>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -50,9 +56,9 @@
                                 <th>ID</th>
                                 <th>Item</th>
                                 <th>Categoria</th>
-                                <th>Estoque</th>
+                                <th>Quantidade</th>
                                 <th>Status</th>
-                                <th>Ações</th>
+                                <th style="text-align: center;">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-produtos">
@@ -74,7 +80,7 @@
                     <label for="modal-tipo">Tipo de Operação</label>
                     <select id="modal-tipo">
                         <option value="SAIDA">Retirar (Saída)</option>
-                        <option value="ENTRADA">Devolver/Adicionar (Entrada)</option>
+                        <option value="ENTRADA">Adicionar (Entrada)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -82,7 +88,7 @@
                     <input type="number" id="modal-qtd" min="1" value="1" required>
                 </div>
                 <div class="form-group">
-                    <label for="modal-centro-custo">Centro de Custo / Destino</label>
+                    <label for="modal-centro-custo">Centro de Custo / Destino / Chamado</label>
                     <input type="text" id="modal-centro-custo" placeholder="Ex: Setor Financeiro / Chamado #1042">
                 </div>
                 <div class="modal-actions">
