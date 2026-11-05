@@ -3,104 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Almoxarifado TI - Atende Projel</title>
+    <title>Almoxarifado - Filial BH - TI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilo Personalizado -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="app-container">
-        <header class="header">
-            <div class="logo-container">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Atende Projel" class="sistema-logo">
-            </div>
-            <p>Gestão e Controle de Estoque em Tempo Real</p>
+<body class="bg-dark text-light">
+
+    <div class="container py-4">
+        <!-- Cabeçalho com Logo -->
+        <header class="text-center my-4">
+            <img src="{{ url_for('static', filename='img/sistemas-de-ti.png') }}" alt="Logo Atende Projel" style="max-height: 70px; width: auto;" class="mb-2">
+            <h5 class="text-info font-weight-light">Gestão e Controle de Estoque em Tempo Real</h5>
         </header>
 
-        <!-- Banner de Alerta Dinâmico -->
-        <div id="alert-banner" class="alert-banner hidden"></div>
+        <!-- Alerta de Estoque Crítico -->
+        <div id="alertaCriticoContainer" class="alert alert-danger border-danger text-center py-2 mb-4 d-none" role="alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span id="textoAlertaCritico"></span>
+        </div>
 
-        <main class="grid-layout">
+        <div class="row">
             <!-- Formulário de Cadastro / Edição -->
-            <section class="card">
-                <h2 id="form-titulo">Cadastrar / Repor Item</h2>
-                <p id="form-subtitulo" class="card-subtitle">Se o item já existir, a quantidade será somada automaticamente.</p>
-                <form id="form-produto">
-                    <input type="hidden" id="edit-produto-id">
-                    <div class="form-group">
-                        <label for="nome">Nome do Equipamento/Item</label>
-                        <input type="text" id="nome" required placeholder="Ex: Monitor Dell 24'">
-                    </div>
-                    <div class="form-group">
-                        <label for="categoria">Categoria</label>
-                        <input type="text" id="categoria" required placeholder="Ex: Periféricos, Redes">
-                    </div>
-                    <div class="form-group">
-                        <label for="quantidade">Quantidade</label>
-                        <input type="number" id="quantidade" min="0" value="1" required>
-                    </div>
-                    <button type="submit" id="btn-salvar" class="btn btn-primary">Salvar no Estoque</button>
-                    <button type="button" id="btn-cancelar-edicao" class="btn btn-secondary hidden" onclick="cancelarEdicao()" style="margin-top: 0.5rem;">Cancelar Edição</button>
-                </form>
-            </section>
+            <div class="col-md-4 mb-4">
+                <div class="card bg-secondary bg-opacity-10 border-secondary p-4 rounded-4 shadow">
+                    <h4 id="formTitulo" class="mb-3 text-light">Cadastrar / Repor Item</h4>
+                    <p class="text-muted small mb-4">Se o item já existir, a quantidade será somada automaticamente.</p>
+                    
+                    <form id="formProduto">
+                        <input type="hidden" id="produtoId">
+                        
+                        <div class="mb-3">
+                            <label for="nomeItem" class="form-label text-light">Nome do Equipamento/Item</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="nomeItem" placeholder="Ex: Monitor Dell 24'" required>
+                        </div>
 
-            <!-- Tabela Organizada de Itens em Estoque -->
-            <section class="card full-width">
-                <div class="table-header-flex">
-                    <h2>Itens em Estoque</h2>
-                    <div class="search-box">
-                        <input type="text" id="filtro-pesquisa" placeholder="🔍 Pesquisar equipamento ou categoria..." onkeyup="filtrarProdutos()">
+                        <div class="mb-3">
+                            <label for="categoriaItem" class="form-label text-light">Categoria</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="categoriaItem" placeholder="Ex: Periféricos, Redes" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="quantidadeItem" class="form-label text-light">Quantidade</label>
+                            <input type="number" class="form-control bg-dark text-light border-secondary" id="quantidadeItem" value="1" min="1" required>
+                        </div>
+
+                        <button type="submit" id="btnSalvar" class="btn btn-info w-100 fw-bold text-dark py-2 mt-2">Salvar no Estoque</button>
+                        <button type="button" id="btnCancelarEdicao" class="btn btn-outline-light w-100 mt-2 d-none">Cancelar Edição</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabela de Itens em Estoque -->
+            <div class="col-md-8">
+                <div class="card bg-secondary bg-opacity-10 border-secondary p-4 rounded-4 shadow">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                        <h3 class="text-light m-0">Itens em Estoque</h3>
+                        <div class="input-group w-auto" style="max-width: 280px;">
+                            <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-search"></i></span>
+                            <input type="text" id="filtroPesquisa" class="form-control bg-dark text-light border-secondary" placeholder="Pesquisar equipamento...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-dark table-hover align-middle mb-0">
+                            <thead class="table-secondary text-dark sticky-top">
+                                <tr>
+                                    <th scope="col" style="width: 10%;">ID</th>
+                                    <th scope="col" style="width: 30%;">ITEM</th>
+                                    <th scope="col" style="width: 20%;">CATEGORIA</th>
+                                    <th scope="col" style="width: 15%;">QUANTIDADE</th>
+                                    <th scope="col" style="width: 10%;">STATUS</th>
+                                    <th scope="col" style="width: 15%; text-align: center;">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaProdutos">
+                                <!-- Preenchido dinamicamente via JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Item</th>
-                                <th>Categoria</th>
-                                <th>Quantidade</th>
-                                <th>Status</th>
-                                <th style="text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-produtos">
-                            <!-- Preenchido via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Modal de Movimentação (Retirar/Entrar) -->
-    <div id="modal-movimentacao" class="modal hidden">
-        <div class="modal-content card">
-            <h3 id="modal-titulo">Movimentar Item</h3>
-            <form id="form-movimentacao">
-                <input type="hidden" id="modal-produto-id">
-                <div class="form-group">
-                    <label for="modal-tipo">Tipo de Operação</label>
-                    <select id="modal-tipo">
-                        <option value="SAIDA">Retirar (Saída)</option>
-                        <option value="ENTRADA">Adicionar (Entrada)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="modal-qtd">Quantidade</label>
-                    <input type="number" id="modal-qtd" min="1" value="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="modal-centro-custo">Centro de Custo / Destino / Chamado</label>
-                    <input type="text" id="modal-centro-custo" placeholder="Ex: Setor Financeiro / Chamado #1042">
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Confirmar</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Modal de Movimentação (Entrada/Saída) -->
+    <div class="modal fade" id="modalMovimentacao" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-secondary shadow">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="tituloModalMov">Movimentar Estoque</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="movProdutoId">
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Item:</label>
+                        <p id="movNomeProduto" class="fw-bold fs-5"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipoMovimentacao" class="form-label">Tipo de Movimentação</label>
+                        <select class="form-control bg-dark text-light border-secondary" id="tipoMovimentacao">
+                            <option value="ENTRADA">Entrada (Adicionar ao Estoque)</option>
+                            <option value="SAIDA">Saída (Retirar do Estoque)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qtdMovimentacao" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control bg-dark text-light border-secondary" id="qtdMovimentacao" value="1" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="centroCusto" class="form-label">Centro de Custo / Destino</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" id="centroCusto" placeholder="Ex: Suporte, Setor Financeiro">
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmarMov" class="btn btn-info fw-bold text-dark">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.5net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script de Integração da Aplicação -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            carregarProdutos();
+
+            document.getElementById("formProduto").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const id = document.getElementById("produtoId").value;
+                const nome = document.getElementById("nomeItem").value;
+                const categoria = document.getElementById("categoriaItem").value;
+                const quantidade = parseInt(document.getElementById("quantidadeItem").value);
+
+                const dados = { nome, categoria, quantidade };
+                if (id) dados.id = parseInt(id);
+
+                try {
+                    const resposta = await fetch("/api/produtos", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(dados)
+                    });
+                    const resultado = await resposta.json();
+                    if (resposta.ok) {
+                        limparFormulario();
+                        carregarProdutos();
+                    } else {
+                        alert("Erro: " + (resultado.erro || "Desconhecido"));
+                    }
+                } catch (erro) {
+                    console.error("Erro ao salvar produto:", erro);
+                }
+            });
+
+            document.getElementById("btnConfirmarMov").addEventListener("click", async () => {
+                const produto_id = parseInt(document.getElementById("movProdutoId").value);
+                const tipo = document.getElementById("tipoMovimentacao").value;
+                const quantidade = parseInt(document.getElementById("qtdMovimentacao").value);
+                const centro_custo = document.getElementById("centroCusto").value || "N/A";
+
+                try {
+                    const resposta = await fetch("/api/movimentacao", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ produto_id, tipo, quantidade, centro_custo })
+                    });
+                    const resultado = await resposta.json();
+                    if (resposta.ok) {
+                        const modalEl = document.getElementById('modalMovimentacao');
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+                        carregarProdutos();
+                        if (resultado.alerta) {
+                            alert(resultado.alerta);
+                        }
+                    } else {
+                        alert("Erro: " + (resultado.erro || "Desconhecido"));
+                    }
+                } catch (erro) {
+                    console.error("Erro na movimentação:", erro);
+                }
+            });
+
+            document.getElementById("filtroPesquisa").addEventListener("input", (e) => {
+                const termo = e.target.value.toLowerCase();
+                const linhas = document.querySelectorAll("#tabelaProdutos tr");
+                linhas.forEach(linha => {
+                    const texto = linha.innerText.toLowerCase();
+                    linha.style.display = texto.includes(termo) ? "" : "none";
+                });
+            });
+
+            document.getElementById("btnCancelarEdicao").addEventListener("click", limparFormulario);
+        });
+
+        async function carregarProdutos() {
+            try {
+                const resposta = await fetch("/api/produtos");
+                const produtos = await resposta.json();
+                const tbody = document.getElementById("tabelaProdutos");
+                tbody.innerHTML = "";
+
+                let alertasCriticos = [];
+
+                produtos.forEach(p => {
+                    if (p.status_alerta) {
+                        alertasCriticos.push(`${p.nome} (${p.quantidade} un)`);
+                    }
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>#${p.id}</td>
+                        <td class="fw-bold">${p.nome}</td>
+                        <td><span class="badge bg-secondary text-light">${p.categoria}</span></td>
+                        <td class="fw-bold text-info">${p.quantidade}</td>
+                        <td><span class="badge ${p.status_alerta ? 'bg-danger' : 'bg-success'}">${p.status_alerta ? 'Crítico' : 'Normal'}</span></td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-info me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Movimentar"><i class="fa-solid fa-right-left"></i> Movimentar</button>
+                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                const alertaContainer = document.getElementById("alertaCriticoContainer");
+                const textoAlerta = document.getElementById("textoAlertaCritico");
+                if (alertasCriticos.length > 0) {
+                    textoAlerta.innerText = `ATENÇÃO AO ESTOQUE CRÍTICO: ${alertasCriticos.join(" | ")}`;
+                    alertaContainer.classList.remove("d-none");
+                } else {
+                    alertaContainer.classList.add("d-none");
+                }
+            } catch (erro) {
+                console.error("Erro ao carregar produtos:", erro);
+            }
+        }
+
+        function editarProduto(id, nome, categoria, quantidade) {
+            document.getElementById("produtoId").value = id;
+            document.getElementById("nomeItem").value = nome;
+            document.getElementById("categoriaItem").value = categoria;
+            document.getElementById("quantidadeItem").value = quantidade;
+            document.getElementById("formTitulo").innerText = "Editar Item";
+            document.getElementById("btnSalvar").innerText = "Atualizar Item";
+            document.getElementById("btnCancelarEdicao").classList.remove("d-none");
+        }
+
+        function limparFormulario() {
+            document.getElementById("formProduto").reset();
+            document.getElementById("produtoId").value = "";
+            document.getElementById("formTitulo").innerText = "Cadastrar / Repor Item";
+            document.getElementById("btnSalvar").innerText = "Salvar no Estoque";
+            document.getElementById("btnCancelarEdicao").classList.add("d-none");
+        }
+
+        async function excluirProduto(id) {
+            if (confirm("Deseja realmente excluir este item do estoque?")) {
+                try {
+                    const resposta = await fetch(`/api/produtos/${id}`, { method: "DELETE" });
+                    if (resposta.ok) {
+                        carregarProdutos();
+                    } else {
+                        const res = await resposta.json();
+                        alert("Erro ao excluir: " + (res.erro || "Desconhecido"));
+                    }
+                } catch (erro) {
+                    console.error("Erro na exclusão:", erro);
+                }
+            }
+        }
+
+        function abrirMovimentacao(id, nome) {
+            document.getElementById("movProdutoId").value = id;
+            document.getElementById("movNomeProduto").innerText = nome;
+            document.getElementById("qtdMovimentacao").value = 1;
+            document.getElementById("centroCusto").value = "";
+            const modal = new bootstrap.Modal(document.getElementById('modalMovimentacao'));
+            modal.show();
+        }
+    </script>
 </body>
 </html>
