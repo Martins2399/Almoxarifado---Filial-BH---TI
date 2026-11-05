@@ -351,3 +351,24 @@ tbody tr:hover td {
     width: auto;
     padding: 0.8rem 1.4rem;
 }
+
+.btn-edit, .btn-delete {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    margin-left: 4px;
+}
+
+.btn-edit:hover {
+    background-color: rgba(14, 165, 233, 0.2);
+    border-color: var(--accent-blue);
+}
+
+.btn-delete:hover {
+    background-color: rgba(244, 63, 94, 0.2);
+    border-color: var(--danger-red);
+}

@@ -30,11 +30,12 @@ def listar_produtos():
         return jsonify([]), 200
 
 @app.route('/api/produtos', methods=['POST'])
-def adicionar_produto():
+def adicionar_ou_atualizar_produto():
     if not supabase:
         return jsonify({"erro": "Banco de dados não configurado"}), 500
     
     dados = request.json or {}
+    produto_id = dados.get('id') # Se vier ID, é uma edição
     nome_original = str(dados.get('nome', '')).strip()
     categoria = str(dados.get('categoria', '')).strip()
     quantidade_adicionada = int(dados.get('quantidade', 0))
@@ -43,11 +44,18 @@ def adicionar_produto():
     if not nome_original or not categoria:
         return jsonify({"erro": "Nome e categoria são obrigatórios!"}), 400
 
-    # Chave normalizada para evitar duplicidade independente de maiúsculas/minúsculas ou espaços extras
-    nome_chave = ' '.join(nome_original.lower().split())
-
     try:
-        # Busca todos os produtos para comparar a chave normalizada
+        # Se foi passado um ID, tratamos como EDIÇÃO
+        if produto_id:
+            supabase.table('produtos').update({
+                'nome': nome_original,
+                'categoria': categoria,
+                'quantidade': quantidade_adicionada
+            }).eq('id', produto_id).execute()
+            return jsonify({"mensagem": "Item atualizado com sucesso!"}), 200
+
+        # Caso contrário, fluxo normal de cadastro/soma por palavra-chave
+        nome_chave = ' '.join(nome_original.lower().split())
         response_all = supabase.table('produtos').select('*').execute()
         produtos_cadastrados = response_all.data or []
 
@@ -60,15 +68,14 @@ def adicionar_produto():
 
         if produto_existente:
             nova_quantidade = produto_existente['quantidade'] + quantidade_adicionada
-            
-            response = supabase.table('produtos').update({
+            supabase.table('produtos').update({
                 'quantidade': nova_quantidade,
                 'categoria': categoria
             }).eq('id', produto_existente['id']).execute()
 
             return jsonify({"mensagem": f"Item já existente encontrado! Quantidade atualizada para {nova_quantidade}."}), 200
         else:
-            response = supabase.table('produtos').insert({
+            supabase.table('produtos').insert({
                 'nome': nome_original,
                 'categoria': categoria,
                 'quantidade': quantidade_adicionada,
@@ -78,8 +85,18 @@ def adicionar_produto():
             return jsonify({"mensagem": "Item cadastrado com sucesso!"}), 201
             
     except Exception as e:
-        print("Erro ao cadastrar/atualizar produto:", str(e))
+        print("Erro ao salvar produto:", str(e))
         return jsonify({"erro": f"Erro no banco de dados: {str(e)}"}), 500
+
+@app.route('/api/produtos/<int:produto_id>', methods=['DELETE'])
+def excluir_produto(produto_id):
+    if not supabase:
+        return jsonify({"erro": "Banco de dados não configurado"}), 500
+    try:
+        supabase.table('produtos').delete().eq('id', produto_id).execute()
+        return jsonify({"mensagem": "Item excluído com sucesso!"}), 200
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao excluir: {str(e)}"}), 500
 
 @app.route('/api/movimentacao', methods=['POST'])
 def registrar_movimentacao():

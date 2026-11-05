@@ -3,11 +3,8 @@ let listaGlobalProdutos = [];
 document.addEventListener('DOMContentLoaded', () => {
     carregarProdutos();
 
-    document.getElementById('form-produto').addEventListener('submit', cadastrarOuAtualizarProduto);
+    document.getElementById('form-produto').addEventListener('submit', salvarProduto);
     document.getElementById('form-movimentacao').addEventListener('submit', processarMovimentacao);
-    
-    // Se você tiver um input de pesquisa com o ID 'filtro-pesquisa', descomente a linha abaixo:
-    // document.getElementById('filtro-pesquisa').addEventListener('input', filtrarProdutos);
 });
 
 async function carregarProdutos() {
@@ -50,8 +47,10 @@ function renderizarTabela(produtos) {
                     ${isCritico ? '⚠️ Crítico (' + p.quantidade + ')' : 'Normal'}
                 </span>
             </td>
-            <td style="text-align: center;">
+            <td style="text-align: center; white-space: nowrap;">
                 <button class="btn btn-action" onclick="abrirModal(${p.id}, '${p.nome}')">Movimentar</button>
+                <button class="btn btn-edit" onclick="prepararEdicao(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade})" title="Editar Nome/Categoria">✏️</button>
+                <button class="btn btn-delete" onclick="excluirProduto(${p.id}, '${p.nome}')" title="Excluir Item">🗑️</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -78,26 +77,76 @@ function exibirAlertaBanner(itensCriticos) {
     }
 }
 
-async function cadastrarOuAtualizarProduto(e) {
+async function salvarProduto(e) {
     e.preventDefault();
+    const id = document.getElementById('edit-produto-id').value;
     const nome = document.getElementById('nome').value;
     const categoria = document.getElementById('categoria').value;
     const quantidade = document.getElementById('quantidade').value;
 
+    const payload = { nome, categoria, quantidade };
+    if (id) payload.id = parseInt(id);
+
     const response = await fetch('/api/produtos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, categoria, quantidade })
+        body: JSON.stringify(payload)
     });
 
     const resultado = await response.json();
 
     if (response.ok) {
-        document.getElementById('form-produto').reset();
+        cancelarEdicao();
         carregarProdutos();
         alert(resultado.mensagem);
     } else {
         alert(resultado.erro || 'Erro ao processar item');
+    }
+}
+
+function prepararEdicao(id, nome, categoria, quantidade) {
+    document.getElementById('edit-produto-id').value = id;
+    document.getElementById('nome').value = nome;
+    document.getElementById('categoria').value = categoria;
+    document.getElementById('quantidade').value = quantidade;
+
+    document.getElementById('form-titulo').innerText = `Editar Item #${id}`;
+    document.getElementById('form-subtitulo').innerText = `Modifique os campos abaixo e clique em Atualizar.`;
+    document.getElementById('btn-salvar').innerText = 'Atualizar Item';
+    document.getElementById('btn-cancelar-edicao').classList.remove('hidden');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelarEdicao() {
+    document.getElementById('form-produto').reset();
+    document.getElementById('edit-produto-id').value = '';
+    document.getElementById('form-titulo').innerText = 'Cadastrar / Repor Item';
+    document.getElementById('form-subtitulo').innerText = 'Se o item já existir, a quantidade será somada automaticamente.';
+    document.getElementById('btn-salvar').innerText = 'Salvar no Estoque';
+    document.getElementById('btn-cancelar-edicao').classList.add('hidden');
+}
+
+async function excluirProduto(id, nome) {
+    if (!confirm(`Tem certeza que deseja excluir permanentemente o item "${nome}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/produtos/${id}`, {
+            method: 'DELETE'
+        });
+        const resultado = await response.json();
+
+        if (response.ok) {
+            alert(resultado.mensagem);
+            carregarProdutos();
+        } else {
+            alert(resultado.erro || 'Erro ao excluir item');
+        }
+    } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro ao conectar com o servidor.');
     }
 }
 

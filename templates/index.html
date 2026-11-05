@@ -20,11 +20,12 @@
         <div id="alert-banner" class="alert-banner hidden"></div>
 
         <main class="grid-layout">
-            <!-- Formulário de Cadastro / Entrada -->
+            <!-- Formulário de Cadastro / Edição -->
             <section class="card">
-                <h2>Cadastrar / Repor Item</h2>
-                <p class="card-subtitle">Se o item já existir, a quantidade será somada automaticamente.</p>
+                <h2 id="form-titulo">Cadastrar / Repor Item</h2>
+                <p id="form-subtitulo" class="card-subtitle">Se o item já existir, a quantidade será somada automaticamente.</p>
                 <form id="form-produto">
+                    <input type="hidden" id="edit-produto-id">
                     <div class="form-group">
                         <label for="nome">Nome do Equipamento/Item</label>
                         <input type="text" id="nome" required placeholder="Ex: Monitor Dell 24'">
@@ -34,10 +35,11 @@
                         <input type="text" id="categoria" required placeholder="Ex: Periféricos, Redes">
                     </div>
                     <div class="form-group">
-                        <label for="quantidade">Quantidade a Adicionar</label>
-                        <input type="number" id="quantidade" min="1" value="1" required>
+                        <label for="quantidade">Quantidade</label>
+                        <input type="number" id="quantidade" min="0" value="1" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Salvar no Estoque</button>
+                    <button type="submit" id="btn-salvar" class="btn btn-primary">Salvar no Estoque</button>
+                    <button type="button" id="btn-cancelar-edicao" class="btn btn-secondary hidden" onclick="cancelarEdicao()" style="margin-top: 0.5rem;">Cancelar Edição</button>
                 </form>
             </section>
 
