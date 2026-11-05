@@ -4,14 +4,14 @@ from supabase import create_client, Client
 
 app = Flask(__name__)
 
-# Configurações do Supabase obtidas das variáveis de ambiente com fallback seguro
-SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("SUPABASE_PROJECT_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
+# Configurações do Supabase obtidas das variáveis de ambiente
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("As variáveis de ambiente SUPABASE_URL e SUPABASE_KEY não estão configuradas corretamente no Render.")
+    print("AVISO: Variáveis do Supabase não encontradas!")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 @app.route('/')
 def index():
@@ -19,6 +19,8 @@ def index():
 
 @app.route('/api/produtos', methods=['GET'])
 def listar_produtos():
+    if not supabase:
+        return jsonify({"erro": "Banco de dados não configurado"}), 500
     response = supabase.table('produtos').select('*').order('nome').execute()
     produtos = response.data
     
@@ -29,6 +31,8 @@ def listar_produtos():
 
 @app.route('/api/produtos', methods=['POST'])
 def adicionar_produto():
+    if not supabase:
+        return jsonify({"erro": "Banco de dados não configurado"}), 500
     dados = request.json
     nome = dados.get('nome')
     categoria = dados.get('categoria')
@@ -46,9 +50,11 @@ def adicionar_produto():
 
 @app.route('/api/movimentacao', methods=['POST'])
 def registrar_movimentacao():
+    if not supabase:
+        return jsonify({"erro": "Banco de dados não configurado"}), 500
     dados = request.json
     produto_id = dados.get('produto_id')
-    tipo = dados.get('tipo')  # 'ENTRADA' ou 'SAIDA'
+    tipo = dados.get('tipo')
     qtd_mov = int(dados.get('quantidade', 0))
     centro_custo = dados.get('centro_custo', 'N/A')
 
