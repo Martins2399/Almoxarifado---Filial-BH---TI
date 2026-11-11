@@ -9,100 +9,173 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
-            color: #1e293b;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
+
+        /* Navbar Moderna com Gradiente Profundo */
         .navbar {
-            background: linear-gradient(135deg, #0f172a, #1e293b) !important;
-            padding: 1.1rem 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #090d16, #1e293b) !important;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
         }
-        /* Abas Estilizadas em Pílula */
+
+        /* Abas Estilizadas em Pílula (Navegação de Contratos) */
         .nav-pills .nav-link {
-            color: #475569;
+            color: var(--text-muted);
             font-weight: 500;
-            background-color: #e2e8f0;
+            background-color: #f1f5f9;
+            border: 1px solid var(--border-color);
             border-radius: 50rem;
-            padding: 0.6rem 1.4rem;
+            padding: 0.6rem 1.5rem;
             margin-right: 0.5rem;
             transition: all 0.25s ease;
-            border: none;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
+
         .nav-pills .nav-link:hover {
-            background-color: #cbd5e1;
-            color: #0f172a;
+            background-color: #e2e8f0;
+            color: var(--text-main);
+            transform: translateY(-1px);
         }
+
         .nav-pills .nav-link.active {
-            background-color: #2563eb !important;
+            background-color: var(--primary-color) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
         }
-        /* Cards Modernos com Sombra Suave */
+
+        /* Cards Refinados */
         .card {
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            background: #ffffff;
+            background: var(--card-bg);
+            transition: box-shadow 0.3s ease;
         }
-        /* Tabela Limpa e Espaçosa */
+
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Tabela Estilizada */
         .table {
             margin-bottom: 0;
         }
+
         .table th {
             background-color: #f8fafc !important;
-            color: #64748b !important;
+            color: var(--text-muted) !important;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            padding: 1.1rem 1rem;
-            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid var(--border-color);
         }
+
         .table td {
-            padding: 1.1rem 1rem;
+            padding: 1.15rem 1rem;
             vertical-align: middle;
             color: #334155;
             border-bottom: 1px solid #f1f5f9;
+            font-size: 0.925rem;
         }
+
+        .table-hover tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
         .table-hover tbody tr:hover {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
         }
-        /* Badges e Botões */
+
+        /* Badges de Status Modernos */
         .badge {
             font-weight: 500;
-            padding: 0.55em 0.9em;
+            padding: 0.55em 1em;
             border-radius: 50rem;
             font-size: 0.75rem;
+            letter-spacing: 0.02em;
         }
+
+        /* Quantidade em Destaque */
+        .badge-qtd {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Botões */
         .btn {
             border-radius: 0.5rem;
             font-weight: 500;
-            padding: 0.5rem 1.1rem;
-            transition: all 0.2s;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s ease;
         }
+
         .btn-primary {
-            background-color: #2563eb;
-            border-color: #2563eb;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
+
         .btn-primary:hover {
-            background-color: #1d4ed8;
-            border-color: #1d4ed8;
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
         }
+
         .btn-success {
             background-color: #10b981;
             border-color: #10b981;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
         }
+
         .btn-success:hover {
             background-color: #059669;
             border-color: #059669;
+            transform: translateY(-1px);
         }
+
+        .btn-action-icon {
+            padding: 0.4rem 0.65rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        /* Modais */
         .modal-content {
             border: none;
             border-radius: 1rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: var(--border-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
     </style>
 </head>
@@ -118,14 +191,14 @@
         </div>
     </nav>
 
-    <div class="container my-5 px-3 px-md-4" style="max-width: 1300px;">
+    <div class="container my-5 px-3 px-md-4" style="max-width: 1350px;">
         
-        <!-- ABAS DE LOCALIDADES (PILL TABS) + BOTÃO -->
+        <!-- ABAS DE LOCALIDADES E BOTÃO DE ADICIONAR -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <ul class="nav nav-pills border-0" id="localidadesTabs">
                 <!-- Abas injetadas via JavaScript -->
             </ul>
-            <button class="btn btn-outline-primary shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
+            <button class="btn btn-outline-primary shadow-sm bg-white border" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
                 <i class="fa-solid fa-plus-circle me-1 text-primary"></i> Adicionar Localidade
             </button>
         </div>
@@ -135,7 +208,7 @@
             <div class="card-body p-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-1"><i class="fa-solid fa-location-dot me-1"></i> Localidade Ativa</span>
+                        <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-2"><i class="fa-solid fa-location-dot me-1"></i> Localidade Ativa</span>
                         <h2 id="tituloLocalidade" class="fw-bold text-dark mb-1">Belo Horizonte</h2>
                         <p class="text-muted mb-0 small">Acompanhamento e controle rigoroso de ativos, suprimentos e estoque tecnológico.</p>
                     </div>
@@ -148,7 +221,7 @@
             </div>
         </div>
 
-        <!-- TABELA DE PRODUTOS MODERNA -->
+        <!-- TABELA DE PRODUTOS -->
         <div class="card shadow-sm overflow-hidden">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -202,7 +275,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0 pb-4 px-4">
-                        <button type="button" class="btn btn-light text-muted" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-light text-muted border" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary px-4">Salvar Item</button>
                     </div>
                 </form>
@@ -221,7 +294,7 @@
                     </div>
                     <div class="modal-body p-4">
                         <input type="hidden" id="movProdutoId">
-                        <div class="alert alert-secondary py-2 px-3 mb-3 small fw-semibold text-secondary rounded-3" id="movProdutoNome"></div>
+                        <div class="alert alert-light border py-2 px-3 mb-3 small fw-semibold text-secondary rounded-3" id="movProdutoNome"></div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-muted">Tipo de Movimentação</label>
                             <select class="form-select" id="movTipo">
@@ -239,7 +312,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0 pb-4 px-4">
-                        <button type="button" class="btn btn-light text-muted" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-light text-muted border" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-success px-4">Confirmar Movimentação</button>
                     </div>
                 </form>
@@ -263,7 +336,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0 pb-4 px-4">
-                        <button type="button" class="btn btn-light text-muted" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-light text-muted border" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary px-4">Adicionar</button>
                     </div>
                 </form>
@@ -329,12 +402,12 @@
                         <tr>
                             <td class="ps-4 fw-semibold text-dark">${p.nome}</td>
                             <td><span class="text-secondary">${p.categoria}</span></td>
-                            <td><span class="badge bg-light text-dark border px-3 py-2 fw-bold fs-6">${p.quantidade}</span></td>
+                            <td><span class="badge-qtd">${p.quantidade}</span></td>
                             <td>${badgeStatus}</td>
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-light text-success border me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada / Saída"><i class="fa-solid fa-right-left"></i></button>
-                                <button class="btn btn-sm btn-light text-primary border me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade}, ${p.alerta_minimo})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-sm btn-light text-danger border" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-sm btn-light text-success border btn-action-icon me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada / Saída"><i class="fa-solid fa-right-left"></i></button>
+                                <button class="btn btn-sm btn-light text-primary border btn-action-icon me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade}, ${p.alerta_minimo})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-sm btn-light text-danger border btn-action-icon" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
