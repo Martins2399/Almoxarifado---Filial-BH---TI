@@ -6,37 +6,79 @@
     <title>Controle de Almoxarifado - TI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+            padding: 1rem 1.5rem;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 600;
+            border: 1px solid transparent;
+            border-top-left-radius: 0.375rem;
+            border-top-right-radius: 0.375rem;
+            background-color: #e9ecef;
+            margin-right: 4px;
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-tabs .nav-link:hover {
+            background-color: #dee2e6;
+            color: #0d6efd;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff !important;
+            background-color: #0d6efd !important;
+            border-color: #0d6efd #0d6efd #fff !important;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 0.5rem;
+        }
+        .table th {
+            background-color: #212529 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-dark shadow-sm">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1"><i class="fa-solid fa-boxes-stacked"></i> Almoxarifado TI - Gestão por Localidades</span>
+            <span class="navbar-brand mb-0 h1 fs-4"><i class="fa-solid fa-boxes-stacked me-2"></i> Almoxarifado TI - Gestão por Localidades</span>
         </div>
     </nav>
 
-    <div class="container my-4">
+    <div class="container my-5">
         
         <!-- ABAS DE LOCALIDADES -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <ul class="nav nav-tabs" id="localidadesTabs">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <ul class="nav nav-tabs border-0" id="localidadesTabs">
                 <!-- Abas injetadas via JavaScript -->
             </ul>
-            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
-                <i class="fa-solid fa-plus"></i> Adicionar Localidade
+            <button class="btn btn-primary btn-sm shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
+                <i class="fa-solid fa-plus me-1"></i> Adicionar Localidade
             </button>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
+        <div class="card shadow-sm mb-4 bg-white">
+            <div class="card-body p-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h4 id="tituloLocalidade" class="text-primary mb-0">Localidade: Belo Horizonte</h4>
-                        <p class="text-muted small mb-0">Gerenciamento de ativos e estoque de TI da filial selecionada.</p>
+                        <h3 id="tituloLocalidade" class="text-dark fw-bold mb-1">Localidade: Belo Horizonte</h3>
+                        <p class="text-muted mb-0">Gerenciamento de ativos, estoque e contratos de TI da filial selecionada.</p>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProduto">
-                            <i class="fa-solid fa-circle-plus"></i> Novo Item
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <button class="btn btn-success px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalProduto">
+                            <i class="fa-solid fa-circle-plus me-1"></i> Novo Item
                         </button>
                     </div>
                 </div>
@@ -45,20 +87,20 @@
 
         <!-- TABELA DE PRODUTOS -->
         <div class="card shadow-sm">
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-dark">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th>Nome</th>
+                                <th class="ps-3">Nome do Item</th>
                                 <th>Categoria</th>
                                 <th>Quantidade</th>
                                 <th>Status</th>
-                                <th class="text-end">Ações</th>
+                                <th class="text-end pe-3">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaProdutos">
-                            <tr><td colspan="5" class="text-center">Carregando dados...</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-muted">Carregando dados...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -71,32 +113,32 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="formProduto">
-                    <div class="modal-header">
+                    <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title" id="modalProdutoTitulo">Cadastrar Novo Item</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <input type="hidden" id="produtoId">
                         <div class="mb-3">
-                            <label class="form-label">Nome do Item</label>
+                            <label class="form-label fw-bold">Nome do Item</label>
                             <input type="text" class="form-control" id="nomeProduto" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Categoria</label>
+                            <label class="form-label fw-bold">Categoria</label>
                             <input type="text" class="form-control" id="categoriaProduto" required placeholder="Ex: Hardwares, Cabos, Rede">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Quantidade Inicial</label>
+                            <label class="form-label fw-bold">Quantidade Inicial</label>
                             <input type="number" class="form-control" id="quantidadeProduto" value="1" min="0" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Alerta Mínimo</label>
+                            <label class="form-label fw-bold">Alerta Mínimo</label>
                             <input type="number" class="form-control" id="alertaMinimo" value="1" min="0" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Item</button>
                     </div>
                 </form>
             </div>
@@ -108,32 +150,32 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="formMovimentacao">
-                    <div class="modal-header">
+                    <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title">Registrar Movimentação</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <input type="hidden" id="movProdutoId">
-                        <p id="movProdutoNome" class="fw-bold text-secondary"></p>
+                        <p id="movProdutoNome" class="fw-bold text-primary fs-5 mb-3"></p>
                         <div class="mb-3">
-                            <label class="form-label">Tipo de Movimentação</label>
+                            <label class="form-label fw-bold">Tipo de Movimentação</label>
                             <select class="form-select" id="movTipo">
                                 <option value="ENTRADA">Entrada</option>
                                 <option value="SAIDA">Saída</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Quantidade</label>
+                            <label class="form-label fw-bold">Quantidade</label>
                             <input type="number" class="form-control" id="movQuantidade" min="1" value="1" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Centro de Custo / Destino</label>
+                            <label class="form-label fw-bold">Centro de Custo / Destino</label>
                             <input type="text" class="form-control" id="movCentroCusto" placeholder="Ex: TI / Projeto X" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Confirmar</button>
+                        <button type="submit" class="btn btn-success">Confirmar Movimentação</button>
                     </div>
                 </form>
             </div>
@@ -145,19 +187,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="formNovaLocalidade">
-                    <div class="modal-header">
+                    <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title">Adicionar Nova Localidade</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <div class="mb-3">
-                            <label class="form-label">Nome da Localidade / Contrato</label>
+                            <label class="form-label fw-bold">Nome da Localidade / Contrato</label>
                             <input type="text" class="form-control" id="novaLocalidadeNome" placeholder="Ex: Itabira, Contagem" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                        <button type="submit" class="btn btn-primary">Adicionar Localidade</button>
                     </div>
                 </form>
             </div>
@@ -175,7 +217,7 @@
             localidades.forEach(loc => {
                 const li = document.createElement('li');
                 li.className = 'nav-item';
-                li.innerHTML = `<a class="nav-link ${loc === localidadeAtual ? 'active fw-bold' : ''}" href="#" onclick="mudarLocalidade('${loc}')">${loc}</a>`;
+                li.innerHTML = `<a class="nav-link ${loc === localidadeAtual ? 'active shadow-sm' : ''}" href="#" onclick="mudarLocalidade('${loc}')"><i class="fa-solid fa-location-dot me-1"></i> ${loc}</a>`;
                 container.appendChild(li);
             });
             document.getElementById('tituloLocalidade').innerText = `Localidade: ${localidadeAtual}`;
@@ -209,22 +251,22 @@
                 tbody.innerHTML = '';
 
                 if (produtos.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Nenhum item cadastrado para ${localidadeAtual}.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Nenhum item cadastrado para ${localidadeAtual}.</td></tr>`;
                     return;
                 }
 
                 produtos.forEach(p => {
                     let badgeStatus = p.status_alerta 
-                        ? '<span class="badge bg-danger">Crítico / Baixo</span>' 
-                        : '<span class="badge bg-success">Normal</span>';
+                        ? '<span class="badge bg-danger px-2 py-1">Crítico / Baixo</span>' 
+                        : '<span class="badge bg-success px-2 py-1">Normal</span>';
 
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>${p.nome}</strong></td>
-                            <td>${p.categoria}</td>
-                            <td>${p.quantidade}</td>
+                            <td class="ps-3 fw-bold text-dark">${p.nome}</td>
+                            <td><span class="text-secondary">${p.categoria}</span></td>
+                            <td class="fw-bold fs-6">${p.quantidade}</td>
                             <td>${badgeStatus}</td>
-                            <td class="text-end">
+                            <td class="text-end pe-3">
                                 <button class="btn btn-sm btn-outline-success me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada/Saída"><i class="fa-solid fa-right-left"></i></button>
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade}, ${p.alerta_minimo})" title="Editar"><i class="fa-solid fa-pen"></i></button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
