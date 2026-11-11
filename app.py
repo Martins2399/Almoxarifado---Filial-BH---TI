@@ -18,7 +18,10 @@ def listar_produtos():
     if not supabase:
         return jsonify({"erro": "Banco de dados não configurado"}), 500
     try:
-        response = supabase.table('produtos').select('*').order('nome').execute()
+        localidade = request.args.get('localidade', 'Belo Horizonte')
+        
+        # Filtra os produtos pela localidade selecionada
+        response = supabase.table('produtos').select('*').eq('localidade', localidade).order('nome').execute()
         produtos = response.data or []
         
         for p in produtos:
@@ -35,28 +38,29 @@ def adicionar_ou_atualizar_produto():
         return jsonify({"erro": "Banco de dados não configurado"}), 500
     
     dados = request.json or {}
-    produto_id = dados.get('id') # Se vier ID, é uma edição
+    produto_id = dados.get('id') 
     nome_original = str(dados.get('nome', '')).strip()
     categoria = str(dados.get('categoria', '')).strip()
     quantidade_adicionada = int(dados.get('quantidade', 0))
     alerta_minimo = int(dados.get('alerta_minimo', 1))
+    localidade = str(dados.get('localidade', 'Belo Horizonte')).strip()
 
     if not nome_original or not categoria:
         return jsonify({"erro": "Nome e categoria são obrigatórios!"}), 400
 
     try:
-        # Se foi passado um ID, tratamos como EDIÇÃO
         if produto_id:
             supabase.table('produtos').update({
                 'nome': nome_original,
                 'categoria': categoria,
-                'quantidade': quantidade_adicionada
+                'quantidade': quantidade_adicionada,
+                'localidade': localidade
             }).eq('id', produto_id).execute()
             return jsonify({"mensagem": "Item atualizado com sucesso!"}), 200
 
-        # Caso contrário, fluxo normal de cadastro/soma por palavra-chave
+        # Verifica existência considerando a localidade específica
         nome_chave = ' '.join(nome_original.lower().split())
-        response_all = supabase.table('produtos').select('*').execute()
+        response_all = supabase.table('produtos').select('*').eq('localidade', localidade).execute()
         produtos_cadastrados = response_all.data or []
 
         produto_existente = None
@@ -73,13 +77,14 @@ def adicionar_ou_atualizar_produto():
                 'categoria': categoria
             }).eq('id', produto_existente['id']).execute()
 
-            return jsonify({"mensagem": f"Item já existente encontrado! Quantidade atualizada para {nova_quantidade}."}), 200
+            return jsonify({"mensagem": f"Item já existente nesta localidade! Quantidade atualizada para {nova_quantidade}."}), 200
         else:
             supabase.table('produtos').insert({
                 'nome': nome_original,
                 'categoria': categoria,
                 'quantidade': quantidade_adicionada,
-                'alerta_minimo': alerta_minimo
+                'alerta_minimo': alerta_minimo,
+                'localidade': localidade
             }).execute()
 
             return jsonify({"mensagem": "Item cadastrado com sucesso!"}), 201
