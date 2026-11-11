@@ -33,7 +33,7 @@
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
         }
 
-        /* Abas Estilizadas em Pílula (Navegação de Contratos) */
+        /* Abas Estilizadas em Pílula */
         .nav-pills .nav-link {
             color: var(--text-muted);
             font-weight: 500;
@@ -69,6 +69,27 @@
 
         .card:hover {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Campo de Pesquisa */
+        .input-group-search {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group-search:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background-color: #ffffff;
+        }
+
+        .input-group-search .form-control {
+            border: none;
+            background: transparent;
+            box-shadow: none;
         }
 
         /* Tabela Estilizada */
@@ -172,11 +193,6 @@
             padding: 0.75rem 1rem;
             border-color: var(--border-color);
         }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        }
     </style>
 </head>
 <body>
@@ -223,6 +239,18 @@
 
         <!-- TABELA DE PRODUTOS -->
         <div class="card shadow-sm overflow-hidden">
+            <!-- BARRA DE PESQUISA -->
+            <div class="p-3 bg-white border-bottom">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group input-group-search align-items-center px-3">
+                            <i class="fa-solid fa-magnifying-glass text-muted me-2"></i>
+                            <input type="text" id="campoPesquisa" class="form-control" placeholder="Pesquisar por nome ou categoria..." onkeyup="filtrarTabela()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -348,6 +376,7 @@
     <script>
         let localidades = JSON.parse(localStorage.getItem('localidades_ti')) || ["Belo Horizonte", "Barão de Cocais"];
         let localidadeAtual = localidades[0];
+        let todosProdutos = []; // Armazena a lista vinda da API para filtragem local
 
         function renderizarAbas() {
             const container = document.getElementById('localidadesTabs');
@@ -363,6 +392,7 @@
 
         function mudarLocalidade(loc) {
             localidadeAtual = loc;
+            document.getElementById('campoPesquisa').value = ''; // Limpa a busca ao trocar de aba
             renderizarAbas();
             carregarProdutos();
         }
@@ -384,37 +414,51 @@
         async function carregarProdutos() {
             try {
                 const res = await fetch(`/api/produtos?localidade=${encodeURIComponent(localidadeAtual)}`);
-                const produtos = await res.json();
-                const tbody = document.getElementById('tabelaProdutos');
-                tbody.innerHTML = '';
-
-                if (produtos.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted"><i class="fa-solid fa-box-open fa-2x mb-2 d-block text-secondary opacity-50"></i>Nenhum item cadastrado para ${localidadeAtual}.</td></tr>`;
-                    return;
-                }
-
-                produtos.forEach(p => {
-                    let badgeStatus = p.status_alerta 
-                        ? '<span class="badge bg-danger text-white"><i class="fa-solid fa-triangle-exclamation me-1"></i> Crítico / Baixo</span>' 
-                        : '<span class="badge bg-success text-white"><i class="fa-solid fa-check me-1"></i> Normal</span>';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="ps-4 fw-semibold text-dark">${p.nome}</td>
-                            <td><span class="text-secondary">${p.categoria}</span></td>
-                            <td><span class="badge-qtd">${p.quantidade}</span></td>
-                            <td>${badgeStatus}</td>
-                            <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-light text-success border btn-action-icon me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada / Saída"><i class="fa-solid fa-right-left"></i></button>
-                                <button class="btn btn-sm btn-light text-primary border btn-action-icon me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade}, ${p.alerta_minimo})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-sm btn-light text-danger border btn-action-icon" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
+                todosProdutos = await res.json();
+                renderizarTabela(todosProdutos);
             } catch (err) {
                 console.error("Erro ao carregar produtos:", err);
             }
+        }
+
+        function renderizarTabela(produtos) {
+            const tbody = document.getElementById('tabelaProdutos');
+            tbody.innerHTML = '';
+
+            if (produtos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted"><i class="fa-solid fa-box-open fa-2x mb-2 d-block text-secondary opacity-50"></i>Nenhum item encontrado.</td></tr>`;
+                return;
+            }
+
+            produtos.forEach(p => {
+                let badgeStatus = p.status_alerta 
+                    ? '<span class="badge bg-danger text-white"><i class="fa-solid fa-triangle-exclamation me-1"></i> Crítico / Baixo</span>' 
+                    : '<span class="badge bg-success text-white"><i class="fa-solid fa-check me-1"></i> Normal</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-4 fw-semibold text-dark">${p.nome}</td>
+                        <td><span class="text-secondary">${p.categoria}</span></td>
+                        <td><span class="badge-qtd">${p.quantidade}</span></td>
+                        <td>${badgeStatus}</td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-light text-success border btn-action-icon me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada / Saída"><i class="fa-solid fa-right-left"></i></button>
+                            <button class="btn btn-sm btn-light text-primary border btn-action-icon me-1" onclick="editarProduto(${p.id}, '${p.nome}', '${p.categoria}', ${p.quantidade}, ${p.alerta_minimo})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-sm btn-light text-danger border btn-action-icon" onclick="excluirProduto(${p.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Função que filtra os produtos em tempo real
+        function filtrarTabela() {
+            const termo = document.getElementById('campoPesquisa').value.toLowerCase().trim();
+            const produtosFiltrados = todosProdutos.filter(p => 
+                p.nome.toLowerCase().includes(termo) || 
+                p.categoria.toLowerCase().includes(termo)
+            );
+            renderizarTabela(produtosFiltrados);
         }
 
         document.getElementById('formProduto').addEventListener('submit', async function(e) {
