@@ -11,12 +11,12 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: #1e293b;
         }
         .navbar {
             background: linear-gradient(135deg, #0f172a, #1e293b) !important;
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         /* Abas Estilizadas em Pílula */
@@ -25,10 +25,11 @@
             font-weight: 500;
             background-color: #e2e8f0;
             border-radius: 50rem;
-            padding: 0.5rem 1.25rem;
+            padding: 0.6rem 1.4rem;
             margin-right: 0.5rem;
             transition: all 0.25s ease;
             border: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .nav-pills .nav-link:hover {
             background-color: #cbd5e1;
@@ -37,31 +38,31 @@
         .nav-pills .nav-link.active {
             background-color: #2563eb !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
-        /* Cards Modernos */
+        /* Cards Modernos com Sombra Suave */
         .card {
             border: 1px solid #e2e8f0;
             border-radius: 1rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             background: #ffffff;
         }
-        /* Tabela Limpa */
+        /* Tabela Limpa e Espaçosa */
         .table {
             margin-bottom: 0;
         }
         .table th {
-            background-color: #f1f5f9 !important;
-            color: #475569 !important;
+            background-color: #f8fafc !important;
+            color: #64748b !important;
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.05em;
-            padding: 1rem;
+            padding: 1.1rem 1rem;
             border-bottom: 2px solid #e2e8f0;
         }
         .table td {
-            padding: 1rem;
+            padding: 1.1rem 1rem;
             vertical-align: middle;
             color: #334155;
             border-bottom: 1px solid #f1f5f9;
@@ -72,14 +73,14 @@
         /* Badges e Botões */
         .badge {
             font-weight: 500;
-            padding: 0.5em 0.8em;
+            padding: 0.55em 0.9em;
             border-radius: 50rem;
             font-size: 0.75rem;
         }
         .btn {
             border-radius: 0.5rem;
             font-weight: 500;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.1rem;
             transition: all 0.2s;
         }
         .btn-primary {
@@ -101,7 +102,7 @@
         .modal-content {
             border: none;
             border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
     </style>
 </head>
@@ -111,20 +112,21 @@
     <nav class="navbar navbar-dark">
         <div class="container-fluid px-4">
             <span class="navbar-brand mb-0 h1 fs-5 d-flex align-items-center">
-                <i class="fa-solid fa-server me-2 text-primary"></i> Almoxarifado TI <span class="text-muted ms-2 fs-6 fw-normal">| Gestão por Contratos</span>
+                <i class="fa-solid fa-server me-2 text-primary"></i> Almoxarifado TI 
+                <span class="text-light opacity-75 ms-2 fs-6 fw-normal">| Gestão por Contratos</span>
             </span>
         </div>
     </nav>
 
-    <div class="container my-4 px-3 px-md-4">
+    <div class="container my-5 px-3 px-md-4" style="max-width: 1300px;">
         
-        <!-- ABAS DE LOCALIDADES (PILL TABS) -->
+        <!-- ABAS DE LOCALIDADES (PILL TABS) + BOTÃO -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <ul class="nav nav-pills border-0" id="localidadesTabs">
                 <!-- Abas injetadas via JavaScript -->
             </ul>
-            <button class="btn btn-outline-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
-                <i class="fa-solid fa-plus-circle me-1"></i> Adicionar Localidade
+            <button class="btn btn-outline-primary shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
+                <i class="fa-solid fa-plus-circle me-1 text-primary"></i> Adicionar Localidade
             </button>
         </div>
 
@@ -133,12 +135,12 @@
             <div class="card-body p-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-1">Localidade Ativa</span>
+                        <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-1"><i class="fa-solid fa-location-dot me-1"></i> Localidade Ativa</span>
                         <h2 id="tituloLocalidade" class="fw-bold text-dark mb-1">Belo Horizonte</h2>
                         <p class="text-muted mb-0 small">Acompanhamento e controle rigoroso de ativos, suprimentos e estoque tecnológico.</p>
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <button class="btn btn-success shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalProduto">
+                        <button class="btn btn-success shadow-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalProduto">
                             <i class="fa-solid fa-plus me-1"></i> Novo Item
                         </button>
                     </div>
@@ -147,7 +149,7 @@
         </div>
 
         <!-- TABELA DE PRODUTOS MODERNA -->
-        <div class="card shadow-sm">
+        <div class="card shadow-sm overflow-hidden">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -327,7 +329,7 @@
                         <tr>
                             <td class="ps-4 fw-semibold text-dark">${p.nome}</td>
                             <td><span class="text-secondary">${p.categoria}</span></td>
-                            <td class="fw-bold fs-6">${p.quantidade}</td>
+                            <td><span class="badge bg-light text-dark border px-3 py-2 fw-bold fs-6">${p.quantidade}</span></td>
                             <td>${badgeStatus}</td>
                             <td class="text-end pe-4">
                                 <button class="btn btn-sm btn-light text-success border me-1" onclick="abrirMovimentacao(${p.id}, '${p.nome}')" title="Entrada / Saída"><i class="fa-solid fa-right-left"></i></button>
