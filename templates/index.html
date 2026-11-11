@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Almoxarifado TI - Gestão por Localidades</title>
     <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bs-primary: #2563eb;
-            --bs-primary-hover: #1d4ed8;
-            --bg-body: #f8fafc;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-body: #f1f5f9;
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
@@ -26,65 +26,68 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navbar Moderna */
+        /* Navbar com Efeito Gradient & Blur */
         .navbar {
-            background: linear-gradient(135deg, #090d16, #1e293b) !important;
-            padding: 1.1rem 2rem;
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Abas Estilizadas em Pílula */
+        /* Abas Estilizadas em Pílula Moderna */
         .nav-pills .nav-link {
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 600;
             background-color: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 50rem;
-            padding: 0.6rem 1.5rem;
+            padding: 0.65rem 1.6rem;
             margin-right: 0.5rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .nav-pills .nav-link:hover {
-            background-color: #f1f5f9;
-            color: var(--text-main);
-            border-color: #cbd5e1;
+            background-color: #f8fafc;
+            color: var(--primary);
+            border-color: #c7d2fe;
+            transform: translateY(-1px);
         }
 
         .nav-pills .nav-link.active {
-            background-color: var(--bs-primary) !important;
+            background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
             color: #ffffff !important;
-            border-color: var(--bs-primary);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
         }
 
-        /* Cards Estilo Dashboard */
+        /* Cards Estilo Dashboard Corporativo */
         .card {
             border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
             background: var(--card-bg);
+            transition: all 0.3s ease;
         }
 
         .stat-card {
-            border-left: 4px solid var(--bs-primary);
-            transition: transform 0.2s;
+            border-left: 5px solid var(--primary);
+            background: linear-gradient(to right, #ffffff, #faf8ff);
         }
 
-        /* Barra de Pesquisa Moderna */
+        /* Caixa de Pesquisa Moderna */
         .search-box {
             background-color: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            padding: 0.5rem 1rem;
-            transition: all 0.2s;
+            border: 1.5px solid var(--border-color);
+            border-radius: 0.85rem;
+            padding: 0.55rem 1.1rem;
+            transition: all 0.25s ease;
         }
 
         .search-box:focus-within {
-            border-color: var(--bs-primary);
+            border-color: var(--primary);
             background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
         }
 
         .search-box input {
@@ -92,11 +95,12 @@
             background: transparent;
             box-shadow: none;
             outline: none;
+            color: var(--text-main);
         }
 
-        /* CONTAINER COM BARRA DE ROLAGEM INTERNA E CABEÇALHO FIXO */
+        /* Container da Tabela com Rolagem Interna Elegante */
         .table-container-scroll {
-            max-height: 540px;
+            max-height: 520px;
             overflow-y: auto;
             position: relative;
         }
@@ -109,42 +113,42 @@
             box-shadow: inset 0 -2px 0 var(--border-color);
         }
 
-        /* Estilização da Barra de Rolagem */
+        /* Scrollbar Personalizada */
         .table-container-scroll::-webkit-scrollbar {
-            width: 8px;
+            width: 7px;
         }
         .table-container-scroll::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
         .table-container-scroll::-webkit-scrollbar-thumb {
             background: #cbd5e1;
-            border-radius: 4px;
+            border-radius: 10px;
         }
         .table-container-scroll::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
 
-        /* Tabela Limpa */
+        /* Tabela Estilizada */
         .table {
             margin-bottom: 0;
         }
 
         .table th {
             color: var(--text-muted) !important;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.08em;
-            padding: 1.2rem 1.25rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.09em;
+            padding: 1.25rem 1.5rem;
             border-bottom: none;
         }
 
         .table td {
-            padding: 1.15rem 1.25rem;
+            padding: 1.2rem 1.5rem;
             vertical-align: middle;
             color: #334155;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 0.925rem;
+            font-size: 0.95rem;
         }
 
         .table-hover tbody tr {
@@ -152,82 +156,94 @@
         }
 
         .table-hover tbody tr:hover {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
         }
 
-        /* Badges e Quantidade */
+        /* Pílula de Quantidade Estilizada */
         .badge-qtd {
             background-color: #f1f5f9;
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 0.45rem 0.9rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.6rem;
+            font-weight: 700;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
+        /* Badges de Status Modernos */
         .badge {
-            font-weight: 500;
-            padding: 0.5em 0.9em;
+            font-weight: 600;
+            padding: 0.55em 1.1em;
             border-radius: 50rem;
             font-size: 0.75rem;
+            letter-spacing: 0.025em;
         }
 
-        /* Botões */
+        /* Botões Modernos com Efeitos */
         .btn {
-            border-radius: 0.6rem;
-            font-weight: 500;
-            padding: 0.55rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            padding: 0.6rem 1.35rem;
             transition: all 0.2s ease;
         }
 
         .btn-primary {
-            background-color: var(--bs-primary);
-            border-color: var(--bs-primary);
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            border: none;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
         }
 
         .btn-primary:hover {
-            background-color: var(--bs-primary-hover);
-            border-color: var(--bs-primary-hover);
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
         }
 
         .btn-success {
-            background-color: #10b981;
-            border-color: #10b981;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
         }
 
         .btn-success:hover {
-            background-color: #059669;
-            border-color: #059669;
+            background: linear-gradient(135deg, #059669, #10b981);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
         }
 
         .btn-action {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             padding: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0.5rem;
+            border-radius: 0.6rem;
+            transition: all 0.2s;
         }
 
-        /* Modais */
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modais Sofisticados */
         .modal-content {
             border: none;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         .form-control, .form-select {
-            border-radius: 0.6rem;
-            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            padding: 0.8rem 1rem;
             border-color: var(--border-color);
+            background-color: #f8fafc;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--bs-primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
         }
     </style>
 </head>
@@ -236,8 +252,8 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-dark">
         <div class="container-fluid px-4">
-            <span class="navbar-brand mb-0 h1 fs-5 d-flex align-items-center">
-                <i class="fa-solid fa-server me-2 text-primary"></i> Almoxarifado TI 
+            <span class="navbar-brand mb-0 h1 fs-5 d-flex align-items-center fw-bold">
+                <i class="fa-solid fa-server me-2 text-indigo"></i> Almoxarifado TI 
                 <span class="text-light opacity-75 ms-2 fs-6 fw-normal">| Gestão por Contratos</span>
             </span>
         </div>
@@ -250,8 +266,8 @@
             <ul class="nav nav-pills border-0" id="localidadesTabs">
                 <!-- Abas injetadas via JavaScript -->
             </ul>
-            <button class="btn btn-outline-primary shadow-sm bg-white border" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade">
-                <i class="fa-solid fa-plus-circle me-1 text-primary"></i> Adicionar Localidade
+            <button class="btn btn-outline-primary shadow-sm bg-white border" data-bs-toggle="modal" data-bs-target="#modalNovaLocalidade" style="border-color: var(--primary) !important; color: var(--primary);">
+                <i class="fa-solid fa-plus-circle me-1"></i> Adicionar Localidade
             </button>
         </div>
 
@@ -259,8 +275,8 @@
         <div class="row g-4 mb-4">
             <div class="col-lg-8">
                 <div class="card shadow-sm h-100 p-4 justify-content-center">
-                    <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-2 w-fit align-self-start"><i class="fa-solid fa-location-dot me-1"></i> Contrato Ativo</span>
-                    <h2 id="tituloLocalidade" class="fw-bold text-dark mb-1">Belo Horizonte</h2>
+                    <span class="badge bg-indigo-subtle text-indigo mb-2 px-3 py-2 w-fit align-self-start" style="background-color: #e0e7ff; color: #4338ca;"><i class="fa-solid fa-location-dot me-1"></i> Contrato Ativo</span>
+                    <h2 id="tituloLocalidade" class="fw-extrabold text-dark mb-1 fs-3">Belo Horizonte</h2>
                     <p class="text-muted mb-0 small">Acompanhamento e controle rigoroso de ativos, suprimentos e estoque tecnológico da filial.</p>
                 </div>
             </div>
@@ -268,7 +284,7 @@
                 <div class="card shadow-sm h-100 p-4 d-flex flex-column justify-content-center stat-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <span class="text-muted small fw-semibold text-uppercase">Ações Rápidas</span>
+                            <span class="text-muted small fw-bold text-uppercase tracking-wider">Ações Rápidas</span>
                             <h5 class="fw-bold text-dark mt-1 mb-0">Gerenciar Almoxarifado</h5>
                         </div>
                         <button class="btn btn-success shadow-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalProduto">
