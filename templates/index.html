@@ -12,7 +12,7 @@
         :root {
             --bs-primary: #2563eb;
             --bs-primary-hover: #1d4ed8;
-            --bg-body: #f4f6f9;
+            --bg-body: #f8fafc;
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
@@ -26,7 +26,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navbar Sólida e Elegante */
+        /* Navbar Moderna */
         .navbar {
             background: linear-gradient(135deg, #090d16, #1e293b) !important;
             padding: 1.1rem 2rem;
@@ -72,10 +72,6 @@
             transition: transform 0.2s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
         /* Barra de Pesquisa Moderna */
         .search-box {
             background-color: #f8fafc;
@@ -98,20 +94,49 @@
             outline: none;
         }
 
-        /* Tabela Espaçada e Limpa */
+        /* CONTAINER COM BARRA DE ROLAGEM INTERNA E CABEÇALHO FIXO */
+        .table-container-scroll {
+            max-height: 540px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .table-container-scroll thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f8fafc !important;
+            box-shadow: inset 0 -2px 0 var(--border-color);
+        }
+
+        /* Estilização da Barra de Rolagem */
+        .table-container-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .table-container-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .table-container-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .table-container-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Tabela Limpa */
         .table {
             margin-bottom: 0;
         }
 
         .table th {
-            background-color: #f8fafc !important;
             color: var(--text-muted) !important;
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.7rem;
             letter-spacing: 0.08em;
             padding: 1.2rem 1.25rem;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: none;
         }
 
         .table td {
@@ -127,10 +152,10 @@
         }
 
         .table-hover tbody tr:hover {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
         }
 
-        /* Badges e Pílulas de Quantidade */
+        /* Badges e Quantidade */
         .badge-qtd {
             background-color: #f1f5f9;
             color: var(--text-main);
@@ -187,7 +212,7 @@
             border-radius: 0.5rem;
         }
 
-        /* Modais Modernizados */
+        /* Modais */
         .modal-content {
             border: none;
             border-radius: 1rem;
@@ -254,7 +279,7 @@
             </div>
         </div>
 
-        <!-- TABELA DE PRODUTOS COM PESQUISA INTEGRADA -->
+        <!-- TABELA DE PRODUTOS COM SCROLL INTERNO E BUSCA -->
         <div class="card shadow-sm overflow-hidden">
             <!-- HEADER DA TABELA / BUSCA -->
             <div class="p-4 bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -271,7 +296,7 @@
             </div>
 
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-container-scroll">
                     <table class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
